@@ -14,25 +14,25 @@ const Home = () => {
 
     const fetchRestaurants = async () => {
       try {
-        console.log('🔄 Iniciando busca de restaurantes...')
+        console.log('Iniciando busca de restaurantes...')
         setLoading(true)
         setError(null)
 
         const data = await getRestaurants()
 
         if (!mounted) {
-          console.log('⚠️ Componente desmontado, ignorando atualização')
+          console.log('Componente desmontado, ignorando atualização')
           return
         }
 
-        console.log('✅ Dados recebidos com sucesso:', {
+        console.log('Dados recebidos com sucesso:', {
           quantidade: data.length,
           primeiroRestaurante: data[0]
         })
 
         setRestaurants(data)
       } catch (error) {
-        console.error('❌ Erro ao buscar restaurantes:', error)
+        console.error('Erro ao buscar restaurantes:', error)
         if (mounted) {
           setError(error instanceof Error ? error.message : 'Erro ao carregar restaurantes')
         }
@@ -43,16 +43,16 @@ const Home = () => {
       }
     }
 
-    console.log('🏁 Iniciando componente Home')
+    console.log('Iniciando componente Home')
     fetchRestaurants()
 
     return () => {
-      console.log('🔚 Desmontando componente Home')
+      console.log('Desmontando componente Home')
       mounted = false
     }
   }, [])
 
-  console.log('🏠 Estado atual da Home:', {
+  console.log('Estado atual da Home:', {
     loading,
     error,
     restaurantsCount: restaurants.length,
