@@ -1,20 +1,31 @@
+import { useState } from 'react'
 import { Card, Description, Title, Button } from './styles'
-import { Product } from '../../types/restaurant'
+import { MenuItem } from '../../types/restaurant'
+import ProductModal from '../ProductModal'
 
 type ProductCardProps = {
-  product: Product
+  product: MenuItem
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   return (
-    <Card>
-      <img src={product.image} alt={product.name} />
-      <Title>{product.name}</Title>
-      <Description>{product.description}</Description>
-      <Button>
-        Adicionar ao carrinho - R$ {product.price.toFixed(2).replace('.', ',')}
-      </Button>
-    </Card>
+    <>
+      <Card>
+        <img src={product.foto} alt={product.nome} />
+        <Title>{product.nome}</Title>
+        <Description>{product.descricao}</Description>
+        <Button onClick={() => setIsModalOpen(true)}>
+          Mais detalhes
+        </Button>
+      </Card>
+      <ProductModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        item={product}
+      />
+    </>
   )
 }
 

@@ -10,8 +10,11 @@ export const FooterContent = styled.div`
   margin: 0 auto;
   text-align: center;
 
-  img {
-    margin-bottom: 80px;
+  > img {
+    width: 125px;
+    height: auto;
+    margin: 0 auto 32px;
+    display: block;
   }
 
   p {
@@ -25,7 +28,8 @@ export const SocialLinks = styled.ul`
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 80px;
+  margin-bottom: 32px;
+  list-style: none;
 
   li {
     a {
@@ -34,6 +38,12 @@ export const SocialLinks = styled.ul`
       justify-content: center;
       width: 24px;
       height: 24px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
     }
   }
 `
