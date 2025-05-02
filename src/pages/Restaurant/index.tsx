@@ -1,90 +1,64 @@
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Banner, Container, ProductList } from './styles'
 import ProductCard from '../../components/ProductCard'
 import NotFound from '../../components/NotFound'
-import hiokiImage from '../../assets/Hioki Sushi.png'
-import pizzaImage from '../../assets/Pizza Marguerita.png'
-import dolceVitaImage from '../../assets/La Dolce Vita Trattoria.png'
-
-type RestaurantType = {
-  name: string
-  category: string
-  banner: string
-  products: {
-    id: number
-    name: string
-    description: string
-    image: string
-    price: number
-  }[]
-}
-
-const restaurants: Record<string, RestaurantType> = {
-  '1': {
-    name: 'Hioki Sushi',
-    category: 'Japonesa',
-    banner: hiokiImage,
-    products: [
-      {
-        id: 1,
-        name: 'Combinado Especial',
-        description: 'Seleção premium com 44 peças. Sushis, sashimis e hots variados.',
-        image: hiokiImage,
-        price: 129.90
-      },
-      {
-        id: 2,
-        name: 'Sushi Deluxe',
-        description: 'Combinado com 22 peças de sushi variado.',
-        image: hiokiImage,
-        price: 89.90
-      }
-    ]
-  },
-  '2': {
-    name: 'La Dolce Vita Trattoria',
-    category: 'Italiana',
-    banner: dolceVitaImage,
-    products: [
-      {
-        id: 1,
-        name: 'Pizza Margherita',
-        description: 'A clássica pizza italiana com molho de tomate, mussarela de búfala, manjericão fresco e azeite.',
-        image: pizzaImage,
-        price: 69.90
-      },
-      {
-        id: 2,
-        name: 'Pizza Pepperoni',
-        description: 'Pizza com generosa camada de pepperoni, molho de tomate e queijo mussarela.',
-        image: pizzaImage,
-        price: 75.90
-      }
-    ]
-  }
-}
+import { Restaurant as RestaurantType } from '../../types/restaurant'
+import { getRestaurantById } from '../../services/api'
 
 const Restaurant = () => {
   const { id } = useParams()
-  const restaurant = id ? restaurants[id] : null
+  const [restaurant, setRestaurant] = useState<RestaurantType | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  if (!restaurant) {
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      if (!id) return
+
+      try {
+        setLoading(true)
+        setError(null)
+        const data = await getRestaurantById(Number(id))
+        setRestaurant(data)
+      } catch (error) {
+        console.error('Erro ao buscar restaurante:', error)
+        setError('Erro ao carregar o restaurante')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchRestaurant()
+  }, [id])
+
+  if (loading) {
+    return (
+      <Container>
+        <div className="container">
+          <p>Carregando restaurante...</p>
+        </div>
+      </Container>
+    )
+  }
+
+  if (error || !restaurant) {
     return <NotFound />
   }
 
   return (
     <>
-      <Banner style={{ backgroundImage: `url(${restaurant.banner})` }}>
+      <Banner style={{ backgroundImage: `url(${restaurant.capa})` }}>
         <div className="container">
-          <span>{restaurant.category}</span>
-          <h2>{restaurant.name}</h2>
+          <span>{restaurant.tipo}</span>
+          <h2>{restaurant.titulo}</h2>
         </div>
       </Banner>
       <Container>
         <div className="container">
           <ProductList>
-            {restaurant.products?.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {restaurant.cardapio.map((item) => (
+              <ProductCard key={item.id} product={item} />
             ))}
           </ProductList>
         </div>

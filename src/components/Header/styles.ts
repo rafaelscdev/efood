@@ -2,11 +2,7 @@ import styled from 'styled-components'
 
 export const HeaderContainer = styled.header`
   background-color: #FFEBD9;
-  height: 384px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 40px 0;
 `
 
 export const HeaderContent = styled.div`
@@ -17,18 +13,22 @@ export const HeaderContent = styled.div`
     font-weight: bold;
     color: #E66767;
     max-width: 540px;
-    margin: 136px auto 0;
+    margin: 80px auto 0;
+
+    @media (max-width: 768px) {
+      font-size: 24px;
+      margin: 40px auto 0;
+    }
   }
 `
 
 export const Logo = styled.div`
-  position: absolute;
-  top: 64px;
-  left: 50%;
-  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
 
   img {
     width: 125px;
-    height: 58px;
+    height: auto;
   }
 `
