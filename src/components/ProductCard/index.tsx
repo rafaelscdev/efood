@@ -5,9 +5,10 @@ import ProductModal from '../ProductModal'
 
 type ProductCardProps = {
   product: MenuItem
+  onAddToCart?: () => void
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
+const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (
@@ -24,6 +25,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         item={product}
+        onAddToCart={onAddToCart}
       />
     </>
   )

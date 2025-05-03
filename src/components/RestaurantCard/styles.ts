@@ -44,7 +44,7 @@ export const CardContent = styled.div`
     font-weight: bold;
     font-size: 14px;
     margin-top: 16px;
-    
+
     &:hover {
       background-color: #c75555;
     }
@@ -66,7 +66,7 @@ export const CardTitle = styled.div`
     display: flex;
     align-items: center;
     font-weight: bold;
-    
+
     &::before {
       content: '★';
       margin-right: 4px;
@@ -78,4 +78,4 @@ export const CardDescription = styled.p`
   font-size: 14px;
   line-height: 1.5;
   color: #4B4B4B;
-` 
+`

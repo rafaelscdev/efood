@@ -7,9 +7,10 @@ type Props = {
   isOpen: boolean
   onClose: () => void
   item: MenuItem
+  onAddToCart?: () => void
 }
 
-const ProductModal = ({ isOpen, onClose, item }: Props) => {
+const ProductModal = ({ isOpen, onClose, item, onAddToCart }: Props) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <Content>
@@ -23,10 +24,11 @@ const ProductModal = ({ isOpen, onClose, item }: Props) => {
           <Title>{item.nome}</Title>
           <Description>{item.descricao}</Description>
           <ServingSize>Serve: {item.porcao}</ServingSize>
-          <Price>R$ {item.preco.toFixed(2).replace('.', ',')}</Price>
-          <Button>
-            Adicionar ao carrinho
-          </Button>
+          {onAddToCart && (
+            <Button onClick={onAddToCart}>
+              Adicionar ao carrinho - R$ {item.preco.toFixed(2)}
+            </Button>
+          )}
         </Info>
       </Content>
     </Modal>
@@ -108,24 +110,22 @@ const ServingSize = styled.p`
   color: #FFFFFF;
 `
 
-const Price = styled.p`
-  font-size: 24px;
-  font-weight: bold;
-  color: #FFFFFF;
-  margin-bottom: 8px;
-`
-
 const Button = styled.button`
   background-color: #FFEBD9;
   color: #E66767;
   border: none;
-  padding: 4px 8px;
+  padding: 8px 16px;
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
-  height: 24px;
-  width: 218px;
+  min-height: 24px;
+  width: auto;
+  min-width: 218px;
   margin-top: auto;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background-color: #FFF8F2;
