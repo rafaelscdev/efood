@@ -37,3 +37,16 @@ export const GlobalStyle = createGlobalStyle`
     max-width: 100%;
   }
 `
+
+export const colors = {
+  white: '#FFFFFF',
+  red: '#E66767',
+  background: '#FFF8F2',
+  gray: '#666666',
+  beige: '#FFEBD9'
+}
+
+export const breakpoints = {
+  desktop: '1024px',
+  tablet: '768px'
+}

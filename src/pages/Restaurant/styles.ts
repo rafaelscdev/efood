@@ -41,12 +41,27 @@ export const Banner = styled.div`
     font-size: 32px;
     font-weight: 100;
     margin-bottom: 156px;
+    word-break: break-word;
+
+    @media (max-width: 768px) {
+      font-size: 24px;
+      margin-bottom: 80px;
+    }
   }
 
   h2 {
     color: #FFFFFF;
     font-size: 32px;
     font-weight: bold;
+    word-break: break-word;
+
+    @media (max-width: 768px) {
+      font-size: 24px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    height: 200px;
   }
 `
 
@@ -54,4 +69,5 @@ export const ProductList = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 32px;
+  padding: 32px 0;
 `
