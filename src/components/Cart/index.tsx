@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { RootState } from '../../store'
 import { removeItem, toggleCart } from '../../store/reducers/cart'
 import type { CartItem } from '../../store/reducers/cart'
@@ -8,6 +9,7 @@ import * as S from './styles'
 
 const Cart = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { items, isOpen } = useSelector((state: RootState) => state.cart)
 
   const getTotalPrice = () => {
@@ -20,6 +22,16 @@ const Cart = () => {
 
   const handleRemoveItem = (id: number) => {
     dispatch(removeItem(id))
+  }
+
+  const handleCheckout = () => {
+    dispatch(toggleCart())
+    navigate('/checkout')
+  }
+
+  const handleBackToHome = () => {
+    dispatch(toggleCart())
+    navigate('/')
   }
 
   if (!isOpen) return null
@@ -37,6 +49,9 @@ const Cart = () => {
         {items.length === 0 ? (
           <S.EmptyCart>
             <p>O carrinho está vazio</p>
+            <S.BackButton onClick={handleBackToHome}>
+              Voltar para o cardápio
+            </S.BackButton>
           </S.EmptyCart>
         ) : (
           <>
@@ -70,7 +85,7 @@ const Cart = () => {
                   <span>{formatPrice(getTotalPrice())}</span>
                 </div>
               </div>
-              <button>Continuar com a entrega</button>
+              <button onClick={handleCheckout}>Continuar com a entrega</button>
             </S.CartFooter>
           </>
         )}

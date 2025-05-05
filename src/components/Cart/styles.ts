@@ -62,13 +62,35 @@ export const CartHeader = styled.div`
 
 export const EmptyCart = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: calc(100% - 100px);
+  gap: 16px;
 
   p {
     color: ${colors.white};
     font-size: 14px;
+  }
+`
+
+export const BackButton = styled.button`
+  background-color: ${colors.beige};
+  color: ${colors.red};
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+
+  &:hover {
+    background-color: ${colors.white};
   }
 `
 

@@ -11,4 +11,4 @@ const RoutesConfig = () => {
   )
 }
 
-export default RoutesConfig 
+export default RoutesConfig
