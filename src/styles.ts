@@ -43,7 +43,10 @@ export const colors = {
   red: '#E66767',
   background: '#FFF8F2',
   gray: '#666666',
-  beige: '#FFEBD9'
+  beige: '#FFEBD9',
+  primary: '#E66767',
+  primaryDark: '#D55757',
+  text: '#666666'
 }
 
 export const breakpoints = {
