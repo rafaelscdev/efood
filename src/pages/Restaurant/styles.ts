@@ -1,7 +1,9 @@
 import styled from 'styled-components'
+import { colors } from '../../styles'
 
 export const Container = styled.div`
-  padding: 40px 0;
+  padding: 24px 0 120px;
+  background-color: ${colors.background};
 
   h1 {
     font-size: 24px;
@@ -11,12 +13,15 @@ export const Container = styled.div`
 `
 
 export const Banner = styled.div`
-  position: relative;
+  width: 100%;
   height: 280px;
+  display: block;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
 
-  &::before {
+  &::after {
     content: '';
     position: absolute;
     top: 0;
@@ -27,37 +32,26 @@ export const Banner = styled.div`
   }
 
   .container {
-    position: relative;
-    z-index: 1;
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    padding-bottom: 32px;
+    justify-content: space-between;
+    padding: 24px;
+    position: relative;
+    z-index: 1;
   }
 
   span {
-    color: #FFFFFF;
-    font-size: 32px;
     font-weight: 100;
-    margin-bottom: 156px;
-    word-break: break-word;
-
-    @media (max-width: 768px) {
-      font-size: 24px;
-      margin-bottom: 80px;
-    }
+    font-size: 32px;
+    color: ${colors.white};
+    text-transform: capitalize;
   }
 
   h2 {
-    color: #FFFFFF;
     font-size: 32px;
-    font-weight: bold;
-    word-break: break-word;
-
-    @media (max-width: 768px) {
-      font-size: 24px;
-    }
+    font-weight: 900;
+    color: ${colors.white};
   }
 
   @media (max-width: 768px) {
@@ -67,7 +61,16 @@ export const Banner = styled.div`
 
 export const ProductList = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 32px;
-  padding: 32px 0;
+  margin-top: 32px;
+  padding: 0 24px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `

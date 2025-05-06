@@ -1,13 +1,7 @@
-import { GlobalStyle } from './styles'
 import Rotas from './routes'
 
 function App() {
-  return (
-    <>
-      <GlobalStyle />
-      <Rotas />
-    </>
-  )
+  return <Rotas />
 }
 
 export default App
