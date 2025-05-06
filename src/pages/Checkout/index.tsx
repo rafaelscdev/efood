@@ -22,12 +22,11 @@ type FormData = {
   zipCode: string
   number: string
   complement?: string
-  cardName: string
+  cardHolder: string
   cardNumber: string
-  cardCode: string
+  cvv: string
   expirationMonth: string
   expirationYear: string
-  cpf: string
 }
 
 const Checkout = () => {
@@ -43,12 +42,11 @@ const Checkout = () => {
     zipCode: '',
     number: '',
     complement: '',
-    cardName: '',
+    cardHolder: '',
     cardNumber: '',
-    cardCode: '',
+    cvv: '',
     expirationMonth: '',
-    expirationYear: '',
-    cpf: ''
+    expirationYear: ''
   })
 
   const [currentStep, setCurrentStep] = useState<'delivery' | 'payment'>('delivery')
@@ -72,20 +70,8 @@ const Checkout = () => {
       case 'expirationYear':
         formattedValue = formatExpirationDate(value)
         break
-      case 'cardCode':
+      case 'cvv':
         formattedValue = value.replace(/\D/g, '').slice(0, 3)
-        break
-      case 'cpf':
-        formattedValue = value.replace(/\D/g, '').slice(0, 11)
-        if (formattedValue.length > 3) {
-          formattedValue = formattedValue.replace(/(\d{3})(\d)/, '$1.$2')
-        }
-        if (formattedValue.length > 7) {
-          formattedValue = formattedValue.replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
-        }
-        if (formattedValue.length > 11) {
-          formattedValue = formattedValue.replace(/(\d{3})\.(\d{3})\.(\d{3})(\d{1,2})/, '$1.$2.$3-$4')
-        }
         break
     }
 
@@ -131,55 +117,25 @@ const Checkout = () => {
     return Object.keys(errors).length === 0
   }
 
-  const validateCPF = (cpf: string): boolean => {
-    const cleanCPF = cpf.replace(/\D/g, '')
-    if (cleanCPF.length !== 11) return false
-    if (/^(\d)\1+$/.test(cleanCPF)) return false
-
-    let sum = 0
-    for (let i = 0; i < 9; i++) {
-      sum += parseInt(cleanCPF.charAt(i)) * (10 - i)
-    }
-    let digit = 11 - (sum % 11)
-    if (digit > 9) digit = 0
-    if (digit !== parseInt(cleanCPF.charAt(9))) return false
-
-    sum = 0
-    for (let i = 0; i < 10; i++) {
-      sum += parseInt(cleanCPF.charAt(i)) * (11 - i)
-    }
-    digit = 11 - (sum % 11)
-    if (digit > 9) digit = 0
-    if (digit !== parseInt(cleanCPF.charAt(10))) return false
-
-    return true
-  }
-
   const validatePaymentForm = (): boolean => {
     const errors: Partial<FormData> = {}
 
-    if (!formData.cardName.trim()) {
-      errors.cardName = 'Nome no cartão é obrigatório'
-    } else if (formData.cardName.trim().length < 5) {
-      errors.cardName = 'Nome muito curto'
+    if (!formData.cardHolder.trim()) {
+      errors.cardHolder = 'Nome no cartão é obrigatório'
+    } else if (formData.cardHolder.trim().length < 5) {
+      errors.cardHolder = 'Nome muito curto'
     }
 
     if (!validateCardNumber(formData.cardNumber)) {
       errors.cardNumber = 'Número do cartão inválido'
     }
 
-    if (!validateCVV(formData.cardCode)) {
-      errors.cardCode = 'CVV inválido'
+    if (!validateCVV(formData.cvv)) {
+      errors.cvv = 'CVV inválido'
     }
 
     if (!validateExpirationDate(formData.expirationMonth, formData.expirationYear)) {
       errors.expirationMonth = 'Data de validade inválida'
-    }
-
-    if (!formData.cpf.trim()) {
-      errors.cpf = 'CPF é obrigatório'
-    } else if (!validateCPF(formData.cpf)) {
-      errors.cpf = 'CPF inválido'
     }
 
     setFormErrors(errors)
@@ -200,6 +156,11 @@ const Checkout = () => {
     setIsLoading(true)
 
     try {
+      console.log('Carrinho:', cartItems)
+      if (cartItems.length === 0) {
+        throw new Error('Carrinho vazio')
+      }
+
       const payload: CheckoutPayload = {
         products: cartItems.map(item => ({
           id: item.id,
@@ -217,9 +178,9 @@ const Checkout = () => {
         },
         payment: {
           card: {
-            name: formData.cardName,
+            name: formData.cardHolder,
             number: formData.cardNumber,
-            code: formData.cardCode,
+            code: formData.cvv,
             expires: {
               month: formData.expirationMonth,
               year: formData.expirationYear
@@ -228,12 +189,26 @@ const Checkout = () => {
         }
       }
 
+      console.log('Payload:', payload)
       const response = await checkout(payload)
-      dispatch(clearCart())
-      navigate('/confirmacao', { state: response })
+      console.log('Response:', response)
+
+      if (response) {
+        dispatch(clearCart())
+        navigate('/confirmacao', {
+          state: {
+            orderId: response.orderId,
+            status: 'approved'
+          }
+        })
+      }
     } catch (error) {
-      console.error('Erro ao processar pagamento:', error)
-      alert('Erro ao processar o pagamento. Por favor, tente novamente.')
+      console.error('Erro detalhado:', error)
+      if (error instanceof Error && error.message === 'Carrinho vazio') {
+        alert('Não é possível finalizar a compra com o carrinho vazio.')
+      } else {
+        alert('Erro ao processar o pagamento. Por favor, tente novamente.')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -282,21 +257,21 @@ const Checkout = () => {
                 <S.ErrorMessage>{formErrors.address}</S.ErrorMessage>
               )}
             </S.InputGroup>
+            <S.InputGroup>
+              <label htmlFor="city">Cidade</label>
+              <input
+                type="text"
+                id="city"
+                name="city"
+                value={formData.city}
+                onChange={handleInputChange}
+                required
+              />
+              {formErrors.city && (
+                <S.ErrorMessage>{formErrors.city}</S.ErrorMessage>
+              )}
+            </S.InputGroup>
             <S.InputRow>
-              <S.InputGroup>
-                <label htmlFor="city">Cidade</label>
-                <input
-                  type="text"
-                  id="city"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  required
-                />
-                {formErrors.city && (
-                  <S.ErrorMessage>{formErrors.city}</S.ErrorMessage>
-                )}
-              </S.InputGroup>
               <S.InputGroup>
                 <label htmlFor="zipCode">CEP</label>
                 <input
@@ -312,8 +287,6 @@ const Checkout = () => {
                   <S.ErrorMessage>{formErrors.zipCode}</S.ErrorMessage>
                 )}
               </S.InputGroup>
-            </S.InputRow>
-            <S.InputRow>
               <S.InputGroup>
                 <label htmlFor="number">Número</label>
                 <input
@@ -328,17 +301,17 @@ const Checkout = () => {
                   <S.ErrorMessage>{formErrors.number}</S.ErrorMessage>
                 )}
               </S.InputGroup>
-              <S.InputGroup>
-                <label htmlFor="complement">Complemento (opcional)</label>
-                <input
-                  type="text"
-                  id="complement"
-                  name="complement"
-                  value={formData.complement}
-                  onChange={handleInputChange}
-                />
-              </S.InputGroup>
             </S.InputRow>
+            <S.InputGroup>
+              <label htmlFor="complement">Complemento (opcional)</label>
+              <input
+                type="text"
+                id="complement"
+                name="complement"
+                value={formData.complement}
+                onChange={handleInputChange}
+              />
+            </S.InputGroup>
             <S.Button type="submit">Continuar com o pagamento</S.Button>
             <S.BackButton type="button" onClick={handleBack}>
               Voltar para o carrinho
@@ -348,91 +321,85 @@ const Checkout = () => {
           <S.Form onSubmit={handlePaymentSubmit}>
             <h2>Pagamento - Valor a pagar R$ {getTotalPrice().toFixed(2)}</h2>
             <S.InputGroup>
-              <label htmlFor="cardName">Nome no cartão</label>
+              <label htmlFor="cardHolder">Nome no cartão</label>
               <input
                 type="text"
-                id="cardName"
-                name="cardName"
-                value={formData.cardName}
+                id="cardHolder"
+                name="cardHolder"
+                value={formData.cardHolder}
                 onChange={handleInputChange}
+                placeholder="Como está gravado no cartão"
                 required
               />
-              {formErrors.cardName && (
-                <S.ErrorMessage>{formErrors.cardName}</S.ErrorMessage>
+              {formErrors.cardHolder && (
+                <S.ErrorMessage>{formErrors.cardHolder}</S.ErrorMessage>
               )}
             </S.InputGroup>
-            <S.InputGroup>
-              <label htmlFor="cpf">CPF</label>
-              <input
-                type="text"
-                id="cpf"
-                name="cpf"
-                value={formData.cpf}
-                onChange={handleInputChange}
-                placeholder="000.000.000-00"
-                required
-                maxLength={14}
-              />
-              {formErrors.cpf && (
-                <S.ErrorMessage>{formErrors.cpf}</S.ErrorMessage>
-              )}
-            </S.InputGroup>
-            <S.InputGroup>
-              <label htmlFor="cardNumber">Número do cartão</label>
-              <input
-                type="text"
-                id="cardNumber"
-                name="cardNumber"
-                value={formData.cardNumber}
-                onChange={handleInputChange}
-                required
-                maxLength={16}
-              />
-              {formErrors.cardNumber && (
-                <S.ErrorMessage>{formErrors.cardNumber}</S.ErrorMessage>
-              )}
-            </S.InputGroup>
-            <S.InputRow>
+            <S.InputRow className="card-info">
               <S.InputGroup>
-                <label htmlFor="cardCode">CVV</label>
+                <label htmlFor="cardNumber">Número do cartão</label>
                 <input
                   type="text"
-                  id="cardCode"
-                  name="cardCode"
-                  value={formData.cardCode}
+                  id="cardNumber"
+                  name="cardNumber"
+                  value={formData.cardNumber}
                   onChange={handleInputChange}
+                  placeholder="0000 0000 0000 0000"
                   required
-                  maxLength={3}
+                  maxLength={19}
                 />
-                {formErrors.cardCode && (
-                  <S.ErrorMessage>{formErrors.cardCode}</S.ErrorMessage>
+                {formErrors.cardNumber && (
+                  <S.ErrorMessage>{formErrors.cardNumber}</S.ErrorMessage>
                 )}
               </S.InputGroup>
               <S.InputGroup>
-                <label>Vencimento</label>
-                <S.ExpirationRow>
-                  <input
-                    type="text"
-                    name="expirationMonth"
-                    value={formData.expirationMonth}
-                    onChange={handleInputChange}
-                    placeholder="MM"
-                    required
-                    maxLength={2}
-                  />
-                  <span>/</span>
-                  <input
-                    type="text"
-                    name="expirationYear"
-                    value={formData.expirationYear}
-                    onChange={handleInputChange}
-                    placeholder="AA"
-                    required
-                    maxLength={2}
-                  />
-                </S.ExpirationRow>
+                <label htmlFor="cvv">CVV</label>
+                <input
+                  type="text"
+                  id="cvv"
+                  name="cvv"
+                  value={formData.cvv}
+                  onChange={handleInputChange}
+                  placeholder="000"
+                  required
+                  maxLength={3}
+                />
+                {formErrors.cvv && (
+                  <S.ErrorMessage>{formErrors.cvv}</S.ErrorMessage>
+                )}
+              </S.InputGroup>
+            </S.InputRow>
+            <S.InputRow>
+              <S.InputGroup>
+                <label htmlFor="expirationMonth">Mês de vencimento</label>
+                <input
+                  type="text"
+                  id="expirationMonth"
+                  name="expirationMonth"
+                  value={formData.expirationMonth}
+                  onChange={handleInputChange}
+                  placeholder="MM"
+                  required
+                  maxLength={2}
+                />
                 {formErrors.expirationMonth && (
                   <S.ErrorMessage>{formErrors.expirationMonth}</S.ErrorMessage>
+                )}
+              </S.InputGroup>
+              <S.InputGroup>
+                <label htmlFor="expirationYear">Ano de vencimento</label>
+                <input
+                  type="text"
+                  id="expirationYear"
+                  name="expirationYear"
+                  value={formData.expirationYear}
+                  onChange={handleInputChange}
+                  placeholder="AA"
+                  required
+                  maxLength={2}
+                />
+                {formErrors.expirationYear && (
+                  <S.ErrorMessage>{formErrors.expirationYear}</S.ErrorMessage>
                 )}
               </S.InputGroup>
             </S.InputRow>
