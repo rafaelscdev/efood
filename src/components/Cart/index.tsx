@@ -34,12 +34,10 @@ const Cart = () => {
     navigate('/')
   }
 
-  if (!isOpen) return null
-
   return (
-    <S.CartContainer>
+    <S.CartContainer className={isOpen ? 'is-open' : ''}>
       <S.Overlay onClick={() => dispatch(toggleCart())} />
-      <S.CartContent>
+      <S.Sidebar>
         <S.CartHeader>
           <h2>Carrinho</h2>
           <button onClick={() => dispatch(toggleCart())}>
@@ -89,7 +87,7 @@ const Cart = () => {
             </S.CartFooter>
           </>
         )}
-      </S.CartContent>
+      </S.Sidebar>
     </S.CartContainer>
   )
 }

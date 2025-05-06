@@ -3,11 +3,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toggleCart } from '../../store/reducers/cart'
 import type { CartItem } from '../../store/reducers/cart'
 import { RootState } from '../../store'
-import { HeaderContainer, HeaderContent, Logo, CartButton } from './styles'
+import { HeaderContainer, HeaderContent, Logo, CartButton, RestaurantText, HeaderDescription } from './styles'
 import logo from '../../assets/logo.png'
-import cartIcon from '../../assets/cart.svg'
 
-const Header = () => {
+type HeaderProps = {
+  isHome?: boolean
+}
+
+const Header = ({ isHome = false }: HeaderProps) => {
   const dispatch = useDispatch()
   const { items } = useSelector((state: RootState) => state.cart)
 
@@ -15,20 +18,36 @@ const Header = () => {
 
   return (
     <HeaderContainer>
-      <div className="container">
-        <HeaderContent>
-          <Logo>
-            <Link to="/">
-              <img src={logo} alt="efood" />
-            </Link>
-          </Logo>
-          <CartButton onClick={() => dispatch(toggleCart())}>
-            <img src={cartIcon} alt="Carrinho" />
-            {itemCount > 0 && <span>{itemCount}</span>}
-          </CartButton>
-          <p>Viva experiências gastronômicas no conforto da sua casa</p>
-        </HeaderContent>
-      </div>
+      {isHome ? (
+        <>
+          <HeaderContent className="home">
+            <Logo>
+              <Link to="/">
+                <img src={logo} alt="efood" />
+              </Link>
+            </Logo>
+          </HeaderContent>
+          <HeaderDescription>
+            <p>Viva experiências gastronômicas no conforto da sua casa</p>
+          </HeaderDescription>
+        </>
+      ) : (
+        <>
+          <HeaderContent>
+            <RestaurantText>
+              <Link to="/">Restaurantes</Link>
+            </RestaurantText>
+            <Logo>
+              <Link to="/">
+                <img src={logo} alt="efood" />
+              </Link>
+            </Logo>
+            <CartButton onClick={() => dispatch(toggleCart())}>
+              {itemCount} produto(s) no carrinho
+            </CartButton>
+          </HeaderContent>
+        </>
+      )}
     </HeaderContainer>
   )
 }

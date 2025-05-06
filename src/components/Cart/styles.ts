@@ -7,13 +7,17 @@ export const CartContainer = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: flex-end;
-  z-index: 1000;
+  display: none;
+  z-index: 9999;
+
+  &.is-open {
+    display: flex;
+    justify-content: flex-end;
+  }
 `
 
 export const Overlay = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -21,10 +25,21 @@ export const Overlay = styled.div`
   background-color: rgba(0, 0, 0, 0.8);
 `
 
+export const Sidebar = styled.aside`
+  background-color: ${colors.red};
+  z-index: 1;
+  padding: 32px 8px;
+  max-width: 360px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow-y: auto;
+`
+
 export const CartContent = styled.div`
   position: relative;
   width: 360px;
-  height: 100vh;
+  height: 100%;
   background-color: ${colors.red};
   z-index: 1;
   overflow-y: auto;

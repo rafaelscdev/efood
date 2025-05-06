@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getRestaurants } from '../../services/api'
 import RestaurantCard from '../../components/RestaurantCard'
 import { Restaurant } from '../../types/restaurant'
+import Header from '../../components/Header'
 import * as S from './styles'
 
 const Home = () => {
@@ -25,41 +26,53 @@ const Home = () => {
   }, [])
 
   if (loading) return (
-    <S.Container>
-      <S.LoadingContainer>
-        <p>Carregando...</p>
-      </S.LoadingContainer>
-    </S.Container>
+    <>
+      <Header isHome />
+      <S.Container>
+        <S.LoadingContainer>
+          <p>Carregando...</p>
+        </S.LoadingContainer>
+      </S.Container>
+    </>
   )
 
   if (error) return (
-    <S.Container>
-      <S.ErrorContainer>
-        <p>{error}</p>
-        <button onClick={() => window.location.reload()}>Tentar novamente</button>
-      </S.ErrorContainer>
-    </S.Container>
+    <>
+      <Header isHome />
+      <S.Container>
+        <S.ErrorContainer>
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>Tentar novamente</button>
+        </S.ErrorContainer>
+      </S.Container>
+    </>
   )
 
   if (!restaurants.length) return (
-    <S.Container>
-      <S.ErrorContainer>
-        <p>Nenhum restaurante encontrado</p>
-        <button onClick={() => window.location.reload()}>Tentar novamente</button>
-      </S.ErrorContainer>
-    </S.Container>
+    <>
+      <Header isHome />
+      <S.Container>
+        <S.ErrorContainer>
+          <p>Nenhum restaurante encontrado</p>
+          <button onClick={() => window.location.reload()}>Tentar novamente</button>
+        </S.ErrorContainer>
+      </S.Container>
+    </>
   )
 
   return (
-    <S.Container>
-      <div className="container">
-        <S.RestaurantList>
-          {restaurants.map((restaurant) => (
-            <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-          ))}
-        </S.RestaurantList>
-      </div>
-    </S.Container>
+    <>
+      <Header isHome />
+      <S.Container>
+        <div className="container">
+          <S.RestaurantList>
+            {restaurants.map((restaurant) => (
+              <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+            ))}
+          </S.RestaurantList>
+        </div>
+      </S.Container>
+    </>
   )
 }
 
