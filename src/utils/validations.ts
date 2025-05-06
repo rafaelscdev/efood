@@ -9,8 +9,8 @@ export const validateCardNumber = (cardNumber: string): boolean => {
 }
 
 export const validateCVV = (cvv: string): boolean => {
-  const cvvRegex = /^[0-9]{3}$/
-  return cvvRegex.test(cvv)
+  const cleanCVV = cvv.replace(/\D/g, '')
+  return cleanCVV.length === 3
 }
 
 export const validateExpirationDate = (month: string, year: string): boolean => {

@@ -57,7 +57,7 @@ export const InputGroup = styled.div`
   input {
     width: 100%;
     padding: 8px;
-    background-color: ${colors.white};
+    background-color: ${colors.beige};
     border: none;
     border-radius: 4px;
     font-size: 14px;
@@ -79,6 +79,10 @@ export const InputRow = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 34px;
   margin-bottom: 16px;
+
+  &.card-info {
+    grid-template-columns: 2fr 1fr;
+  }
 `
 
 export const ExpirationRow = styled.div`
@@ -89,11 +93,16 @@ export const ExpirationRow = styled.div`
   input {
     width: 48px;
     text-align: center;
+
+    &::placeholder {
+      text-transform: uppercase;
+    }
   }
 
   span {
     color: ${colors.white};
     font-size: 14px;
+    margin: 0 4px;
   }
 `
 
@@ -117,20 +126,12 @@ export const Button = styled.button`
 `
 
 export const ErrorMessage = styled.span`
-  color: ${colors.beige};
+  color: ${colors.white};
   font-size: 12px;
   margin-top: 4px;
   display: block;
 `
 
-export const BackButton = styled.button`
-  width: 100%;
-  padding: 8px;
-  background-color: transparent;
-  color: ${colors.beige};
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
+export const BackButton = styled(Button)`
   margin-top: 8px;
-  text-decoration: underline;
 `
